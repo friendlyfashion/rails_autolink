@@ -49,6 +49,15 @@ class TestRailsAutolink < MiniTest::Unit::TestCase
     assert_equal "{link: #{link3_result}}", auto_link("{link: #{link3_raw}}")
   end
 
+  def test_auto_link_with_block_which_returns_hash
+    url = 'http://www.google.com/'
+    result = auto_link(url) do |it|
+      { text: "www.facebook.com", href: "http://www.facebook.com" }
+    end
+
+    assert_equal '<a href="http://www.facebook.com">www.facebook.com</a>', result
+  end
+
   def test_auto_link_with_options_hash
     assert_dom_equal 'Welcome to my new blog at <a href="http://www.myblog.com/" class="menu" target="_blank">http://www.myblog.com/</a>. Please e-mail me at <a href="mailto:me@email.com" class="menu" target="_blank">me@email.com</a>.',
       auto_link("Welcome to my new blog at http://www.myblog.com/. Please e-mail me at me@email.com.",

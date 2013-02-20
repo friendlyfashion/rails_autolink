@@ -106,7 +106,12 @@ module RailsAutolink
                 end
 
                 link_text = block_given?? yield(href) : href
-                href = 'http://' + href unless scheme
+                if link_text.is_a?(Hash)
+                  href = link_text[:href]      || href
+                  link_text = link_text[:text] || href
+                else
+                  href = 'http://' + href unless scheme
+                end
 
                 unless options[:sanitize] == false
                   link_text = sanitize(link_text)
