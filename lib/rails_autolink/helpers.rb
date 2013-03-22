@@ -106,10 +106,13 @@ module RailsAutolink
                 end
 
                 link_text = block_given?? yield(href) : href
+
+                custom_link_attributes = link_attributes
+
                 if link_text.is_a?(Hash)
 
                   if link_text[:html_options] && link_text[:html_options].is_a?(Hash)
-                    link_attributes = link_text[:html_options].stringify_keys
+                    custom_link_attributes = link_text[:html_options].stringify_keys
                   end
 
                   href = link_text[:href]         || href
@@ -122,7 +125,7 @@ module RailsAutolink
                   link_text = sanitize(link_text)
                   href      = sanitize(href)
                 end
-                content_tag(:a, link_text, link_attributes.merge('href' => href), !!options[:sanitize]) + punctuation.reverse.join('')
+                content_tag(:a, link_text, custom_link_attributes.merge('href' => href), !!options[:sanitize]) + punctuation.reverse.join('')
               end
             end
           end
