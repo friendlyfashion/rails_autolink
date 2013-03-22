@@ -15,7 +15,7 @@ module RailsAutolink
         # <tt>:email_addresses</tt>, and <tt>:urls</tt>. If a block is given, each URL and
         # e-mail address is yielded and the result is used as the link text. By default the
         # text given is sanitized, you can override this behaviour setting the
-        # <tt>:sanitize</tt> option to false, or you can add options to the sanitization of 
+        # <tt>:sanitize</tt> option to false, or you can add options to the sanitization of
         # the text using the <tt>:sanitize_options</tt> option hash.
         #
         # ==== Examples
@@ -107,8 +107,13 @@ module RailsAutolink
 
                 link_text = block_given?? yield(href) : href
                 if link_text.is_a?(Hash)
-                  href = link_text[:href]      || href
-                  link_text = link_text[:text] || href
+
+                  if link_text[:html_options] && link_text[:html_options].is_a?(Hash)
+                    link_attributes = link_text[:html_options].stringify_keys
+                  end
+
+                  href = link_text[:href]         || href
+                  link_text = link_text[:text]    || href
                 else
                   href = 'http://' + href unless scheme
                 end
