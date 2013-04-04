@@ -141,6 +141,10 @@ module RailsAutolink
               else
                 display_text = (block_given?) ? yield(text) : text
 
+                if display_text.is_a?(Hash)
+                  display_text = display_text[:text]
+                end
+
                 unless options[:sanitize] == false
                   text         = sanitize(text)
                   display_text = sanitize(display_text) unless text == display_text
