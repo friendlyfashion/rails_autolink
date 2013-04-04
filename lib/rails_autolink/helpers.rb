@@ -142,7 +142,7 @@ module RailsAutolink
                 display_text = (block_given?) ? yield(text) : text
 
                 if display_text.is_a?(Hash)
-                  display_text = display_text[:title]
+                  display_text = display_text[:text]
                 end
 
                 unless options[:sanitize] == false
