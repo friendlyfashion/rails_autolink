@@ -58,6 +58,15 @@ class TestRailsAutolink < MiniTest::Unit::TestCase
     assert_equal '<a href="http://www.facebook.com">www.facebook.com</a>', result
   end
 
+  def test_auto_link_with_block_with_returns_hash_with_email
+    url = 'jeffry@google.com'
+    result = auto_link(url) do |it|
+      { text: "jeffry@google.com", href: "http://www.google.com" }
+    end
+
+    assert_equal "<a href=\"mailto:jeffry@google.com\">jeffry@google.com</a>", result
+  end
+
   def test_auto_link_with_block_which_returns_hash_with_html_options
     url = 'http://www.google.com/'
     result = auto_link(url) do |it|
