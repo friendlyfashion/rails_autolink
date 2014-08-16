@@ -162,6 +162,11 @@ class TestRailsAutolink < MiniTest::Unit::TestCase
     assert_equal generate_result(view_source), auto_link(view_source)
   end
 
+  def test_auto_link_youtube
+    link_raw = 'https://www.youtube.com/watch?v=mnl7Q_IBXbw'
+    assert_equal %{<div class="video youtube"><iframe width="500" height="281" src="//www.youtube.com/embed/mnl7Q_IBXbw" frameborder="0" allowfullscreen></iframe></div>}, auto_link(link_raw)
+  end
+
   def test_auto_link_already_linked
     linked1 = generate_result('Ruby On Rails', 'http://www.rubyonrails.com')
     linked2 = %('<a href="http://www.example.com">www.example.com</a>')

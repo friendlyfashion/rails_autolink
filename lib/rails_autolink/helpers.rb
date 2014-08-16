@@ -80,6 +80,8 @@ module RailsAutolink
 
           AUTO_EMAIL_RE = /[\w.!#\$%+-]+@[\w-]+(?:\.[\w-]+)+/
 
+          AUTO_YOUTUBE_RE = /(https?:\/\/)?(www.)?(youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/watch\?feature=player_embedded&v=)([A-Za-z0-9_-]*)(\&\S+)?(\?\S+)?/
+
           BRACKETS = { ']' => '[', ')' => '(', '}' => '{' }
 
           WORD_PATTERN = RUBY_VERSION < '1.9' ? '\w' : '\p{Word}'
@@ -87,6 +89,7 @@ module RailsAutolink
           # Turns all urls into clickable links.  If a block is given, each url
           # is yielded and the result is used as the link text.
           def auto_link_urls(text, html_options = {}, options = {})
+            text = auto_embed_youtube(text, html_options, options)
             link_attributes = html_options.stringify_keys
             text.gsub(AUTO_LINK_RE) do
               scheme, href = $1, $&
@@ -127,6 +130,25 @@ module RailsAutolink
                 end
                 content_tag(:a, link_text, custom_link_attributes.merge('href' => href), !!options[:sanitize]) + punctuation.reverse.join('')
               end
+            end
+          end
+
+          def auto_embed_youtube(text, html_options = {}, options = {})
+            text.gsub(AUTO_YOUTUBE_RE) do
+              youtube_id = $4
+              width = options[:width] || 500
+              height = options[:height] || 281
+              frameborder = options[:frameborder] || 0
+              wmode = options[:wmode]
+              autoplay = options[:autoplay]
+              hide_related = options[:hide_related]
+              src = "//www.youtube.com/embed/#{youtube_id}"
+              params = []
+              params << "wmode=#{wmode}" if wmode
+              params << "autoplay=1" if autoplay
+              params << "rel=0" if hide_related
+              src += "?#{params.join '&'}" unless params.empty?
+              %{<div class="video youtube"><iframe width="#{width}" height="#{height}" src="#{src}" frameborder="#{frameborder}" allowfullscreen></iframe></div>}
             end
           end
 
